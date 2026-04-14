@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial AI Practice Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-slate-50 font-sans text-slate-900">
+    
+    <!-- Header Section -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-10">
+        <div class="max-w-5xl mx-auto px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Financial AI Practice Lab</h1>
+                <p class="text-slate-500 mt-1">Master financial analytics, fraud detection, and forecasting using AI tools.</p>
+            </div>
+            <button 
+                onclick="handleDownload()"
+                class="flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg font-medium transition-colors shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" x2="12" y1="15" y2="3"/>
+                </svg>
+                <span>Download Dataset (.csv)</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-6 py-10">
+        <div class="mb-10 text-center max-w-2xl mx-auto">
+            <h2 class="text-3xl font-bold text-slate-800 mb-4">How to use this portal</h2>
+            <p class="text-slate-600 text-lg">
+                1. Download the practice dataset above. <br/>
+                2. Open your preferred AI tool (ChatGPT, Claude, Copilot). <br/>
+                3. Upload the dataset and use the suggested prompts and questions below to guide your learning.
+            </p>
+        </div>
+
+        <!-- Modules Container -->
+        <div id="modules-container" class="space-y-4"></div>
+    </main>
+
+    <script>
+        const CSV_DATA = `Transaction_ID,Date,Time,Quarter,Department,Transaction_Type,Amount_USD,Payment_Method,Location,Economic_Index,Risk_Score,Is_Fraudulent
+TRX-1001,2025-01-05,09:15:00,Q1,Sales,Revenue,45000.00,Bank Transfer,USA,102.5,12,No
+TRX-1002,2025-01-12,14:20:00,Q1,Marketing,Vendor Payment,12500.00,Credit Card,USA,102.6,18,No
+TRX-1003,2025-01-15,10:00:00,Q1,HR,Payroll,85000.00,Bank Transfer,USA,102.6,5,No
+TRX-1004,2025-01-22,03:15:00,Q1,Operations,Asset Purchase,150000.00,Wire Transfer,CYP,102.7,88,Yes
+TRX-1005,2025-02-02,11:45:00,Q1,Sales,Revenue,52000.00,Bank Transfer,USA,103.1,10,No
+TRX-1006,2025-02-08,16:30:00,Q1,R&D,Software License,4500.00,Credit Card,GBR,103.2,15,No
+TRX-1007,2025-02-15,10:00:00,Q1,HR,Payroll,85000.00,Bank Transfer,USA,103.1,5,No
+TRX-1008,2025-02-19,23:45:00,Q1,Sales,Refund,28000.00,Crypto,RUS,103.0,92,Yes
+TRX-1009,2025-03-05,09:30:00,Q1,Sales,Revenue,61000.00,Bank Transfer,USA,103.5,11,No
+TRX-1010,2025-03-12,13:10:00,Q1,Marketing,Vendor Payment,14000.00,Credit Card,USA,103.6,22,No
+TRX-1011,2025-03-15,10:00:00,Q1,HR,Payroll,85000.00,Bank Transfer,USA,103.6,5,No
+TRX-1012,2025-03-28,01:20:00,Q1,Operations,Consulting Fee,75000.00,Wire Transfer,BHS,103.8,85,Yes
+TRX-1013,2025-04-04,10:15:00,Q2,Sales,Revenue,48000.00,Bank Transfer,USA,104.2,14,No
+TRX-1014,2025-04-10,15:45:00,Q2,Marketing,Advertising,22000.00,Credit Card,USA,104.1,19,No
+TRX-1015,2025-04-15,10:00:00,Q2,HR,Payroll,88000.00,Bank Transfer,USA,104.2,5,No
+TRX-1016,2025-04-22,11:00:00,Q2,R&D,Hardware,18000.00,Bank Transfer,JPN,104.3,25,No
+TRX-1017,2025-05-06,09:20:00,Q2,Sales,Revenue,55000.00,Bank Transfer,USA,104.8,11,No
+TRX-1018,2025-05-14,02:10:00,Q2,Marketing,Vendor Payment,95000.00,Crypto,PAN,104.9,94,Yes
+TRX-1019,2025-05-15,10:00:00,Q2,HR,Payroll,88000.00,Bank Transfer,USA,104.9,5,No
+TRX-1020,2025-05-28,14:30:00,Q2,Operations,Logistics,12500.00,Credit Card,USA,105.1,16,No
+TRX-1021,2025-06-03,10:45:00,Q2,Sales,Revenue,65000.00,Bank Transfer,USA,105.5,12,No
+TRX-1022,2025-06-11,16:00:00,Q2,R&D,Cloud Services,8500.00,Credit Card,USA,105.4,14,No
+TRX-1023,2025-06-15,10:00:00,Q2,HR,Payroll,88000.00,Bank Transfer,USA,105.5,5,No
+TRX-1024,2025-06-25,04:45:00,Q2,Sales,Revenue,120000.00,Wire Transfer,VGB,105.6,89,Yes
+TRX-1025,2025-07-05,09:10:00,Q3,Sales,Revenue,50000.00,Bank Transfer,USA,106.0,13,No
+TRX-1026,2025-07-12,13:20:00,Q3,Marketing,Vendor Payment,15000.00,Credit Card,USA,106.1,18,No
+TRX-1027,2025-07-15,10:00:00,Q3,HR,Payroll,88000.00,Bank Transfer,USA,106.1,5,No
+TRX-1028,2025-08-04,11:30:00,Q3,Sales,Revenue,58000.00,Bank Transfer,USA,106.5,11,No
+TRX-1029,2025-08-16,03:30:00,Q3,Operations,Asset Purchase,210000.00,Crypto,KOR,106.6,96,Yes
+TRX-1030,2025-08-15,10:00:00,Q3,HR,Payroll,88000.00,Bank Transfer,USA,106.6,5,No
+TRX-1031,2025-09-06,09:45:00,Q3,Sales,Revenue,70000.00,Bank Transfer,USA,107.2,10,No
+TRX-1032,2025-09-14,15:15:00,Q3,R&D,Software License,5000.00,Credit Card,GBR,107.1,15,No
+TRX-1033,2025-09-15,10:00:00,Q3,HR,Payroll,88000.00,Bank Transfer,USA,107.2,5,No
+TRX-1034,2025-10-05,10:20:00,Q4,Sales,Revenue,85000.00,Bank Transfer,USA,107.8,12,No
+TRX-1035,2025-10-12,14:00:00,Q4,Marketing,Advertising,35000.00,Wire Transfer,USA,107.9,20,No
+TRX-1036,2025-10-15,10:00:00,Q4,HR,Payroll,92000.00,Bank Transfer,USA,107.9,5,No
+TRX-1037,2025-10-28,02:15:00,Q4,Sales,Refund,45000.00,Wire Transfer,CYP,108.0,87,Yes
+TRX-1038,2025-11-04,09:10:00,Q4,Sales,Revenue,110000.00,Bank Transfer,USA,108.5,14,No
+TRX-1039,2025-11-15,10:00:00,Q4,HR,Payroll,92000.00,Bank Transfer,USA,108.6,5,No
+TRX-1040,2025-11-20,16:45:00,Q4,Operations,Logistics,18000.00,Credit Card,USA,108.6,16,No
+TRX-1041,2025-11-29,23:55:00,Q4,Marketing,Vendor Payment,65000.00,Crypto,UKR,108.8,93,Yes
+TRX-1042,2025-12-05,10:30:00,Q4,Sales,Revenue,145000.00,Bank Transfer,USA,109.2,11,No
+TRX-1043,2025-12-12,11:15:00,Q4,Sales,Revenue,130000.00,Bank Transfer,USA,109.3,12,No
+TRX-1044,2025-12-15,10:00:00,Q4,HR,Payroll,92000.00,Bank Transfer,USA,109.3,5,No
+TRX-1045,2025-12-28,14:00:00,Q4,Operations,Bonus Payout,125000.00,Bank Transfer,USA,109.5,10,No`;
+
+        const MODULES = [
+            {
+                id: 'module-1',
+                title: 'Automating Financial Reporting and Analysis',
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-blue-600"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>`,
+                color: 'bg-blue-50 border-blue-200',
+                prompt: `Act as a financial analyst. Using the attached dataset, automatically generate a quarterly P&L (Profit and Loss) summary. Group the Transaction_Type 'Revenue' as income, and everything else as expenses. Break it down by Quarter and Department, and provide a brief executive summary of our financial health.`,
+                questions: [
+                    "How can we calculate the total revenue vs. total expenses for each quarter?",
+                    "Which department incurred the highest non-revenue expenses in Q3, and what were those specific expenses?",
+                    "Based on the P&L summary, what is the overall profit margin trend from Q1 to Q4?",
+                    "Are there any specific expense categories that show a significant spike in a particular quarter?"
+                ]
+            },
+            {
+                id: 'module-2',
+                title: 'Risk Assessment and Fraud Detection',
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-red-600"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2-1 4-2 7-2 2.5 0 4.5 1 6.5 2a1 1 0 0 1 1 1z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>`,
+                color: 'bg-red-50 border-red-200',
+                prompt: `Act as a forensic accountant. I need to build a rules-based fraud detection system. Look at the Is_Fraudulent column and analyze what features (Time, Payment_Method, Location, Amount) correlate most strongly with fraud. Write a Python script (using Pandas and Scikit-Learn) that trains a Random Forest model to flag future fraudulent transactions based on this data.`,
+                questions: [
+                    "Which payment methods and locations are most frequently associated with transactions marked as fraudulent?",
+                    "What is the average transaction amount for fraudulent transactions compared to legitimate ones?",
+                    "How does the transaction time (e.g., late-night vs. standard business hours) correlate with the assigned Risk_Score?",
+                    "If we were to implement a simple rule-based system before the ML model, what three rules would catch the most fraud in this dataset?"
+                ]
+            },
+            {
+                id: 'module-3',
+                title: 'Predictive Analytics for Financial Forecasting',
+                icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-green-600"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>`,
+                color: 'bg-green-50 border-green-200',
+                prompt: `Act as a data scientist. Based on the historical Revenue transactions and the rising Economic_Index from Jan to Dec 2025, forecast the expected Sales Revenue for Q1 of 2026. Explain the statistical method or machine learning model you used to determine this forecast.`,
+                questions: [
+                    "Is there a strong statistical correlation between the Economic_Index and the overall Sales Revenue in this dataset?",
+                    "What is the projected revenue for Q1 2026 using a linear regression or time-series model based on the 2025 data?",
+                    "How might the seasonal trends (e.g., end-of-year spikes) observed in 2025 impact the forecast for the upcoming year?",
+                    "What additional data points would you recommend collecting to make this revenue forecast more accurate?"
+                ]
+            }
+        ];
+
+        // Function to trigger the CSV download
+        function handleDownload() {
+            const blob = new Blob([CSV_DATA], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'financial_ai_practice_data.csv';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+
+        // Function to toggle accordion state
+        function toggleModule(id) {
+            const content = document.getElementById(`content-${id}`);
+            const iconDown = document.getElementById(`icon-down-${id}`);
+            const iconUp = document.getElementById(`icon-up-${id}`);
+            
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                iconDown.classList.add('hidden');
+                iconUp.classList.remove('hidden');
+            } else {
+                content.classList.add('hidden');
+                iconDown.classList.remove('hidden');
+                iconUp.classList.add('hidden');
+            }
+        }
+
+        // Generate the UI for the modules
+        function renderModules() {
+            const container = document.getElementById('modules-container');
+            let htmlContent = '';
+
+            MODULES.forEach(module => {
+                let questionsHtml = module.questions.map(q => `
+                    <li class="flex items-start space-x-3 text-slate-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="m9 12 2 2 4-4"/>
+                        </svg>
+                        <span class="leading-relaxed">${q}</span>
+                    </li>
+                `).join('');
+
+                htmlContent += `
+                    <div class="mb-6 rounded-xl border ${module.color} overflow-hidden shadow-sm transition-all duration-200 hover:shadow-md">
+                        <button 
+                            onclick="toggleModule('${module.id}')"
+                            class="w-full flex items-center justify-between p-5 bg-white bg-opacity-60 hover:bg-opacity-100 transition-colors"
+                        >
+                            <div class="flex items-center space-x-4">
+                                <div class="p-2 bg-white rounded-lg shadow-sm">
+                                    ${module.icon}
+                                </div>
+                                <h2 class="text-xl font-semibold text-slate-800 text-left">${module.title}</h2>
+                            </div>
+                            
+                            <!-- Chevron Down -->
+                            <svg id="icon-down-${module.id}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-slate-500">
+                                <path d="m6 9 6 6 6-6"/>
+                            </svg>
+                            <!-- Chevron Up (Initially Hidden) -->
+                            <svg id="icon-up-${module.id}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-slate-500 hidden">
+                                <path d="m18 15-6-6-6 6"/>
+                            </svg>
+
+                        </button>
+                        
+                        <!-- Collapsible Content -->
+                        <div id="content-${module.id}" class="p-6 bg-white hidden border-t border-slate-100">
+                            <div class="mb-6">
+                                <h3 class="text-sm font-bold tracking-wider text-slate-500 uppercase mb-3">Suggested AI Prompt</h3>
+                                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 text-slate-700 font-mono text-sm leading-relaxed relative">
+                                    <span class="absolute top-0 left-0 w-1 h-full bg-slate-400 rounded-l-lg"></span>
+                                    "${module.prompt}"
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h3 class="text-sm font-bold tracking-wider text-slate-500 uppercase mb-3">Structured Practice Questions</h3>
+                                <ul class="space-y-3">
+                                    ${questionsHtml}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = htmlContent;
+        }
+
+        // Initialize the app on load
+        window.onload = renderModules;
+    </script>
+</body>
+</html>
